@@ -1,0 +1,9 @@
+### send simple mail
+
+GET http://localhost:8080/auth/confirmEmail?token=minh
+accept: application/json
+content-type: application/json
+
+{
+    "email" : "minh.nguyen718@hcmut.edu.vn",
+}
