@@ -27,7 +27,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class SecurityConfig {
         private final String[] PUBLIC_ENDPOINTS = {
                         "/ws/**", "/api/users", "/api/auth/*", "api/category/all", "/api/auth/register/*",
-                        "/api/auth/login/*",
+                        "/api/auth/login/*", "/api/product/search",
                         "/api/product/public/*",
                         "swagger-ui/**", "v3/api-docs/**", "swagger-ui.html", "swagger-ui/**",
                         "/api/payment/vn-pay-callback"

@@ -3,6 +3,7 @@ package com.shopro.shop1905.services;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +30,7 @@ import com.shopro.shop1905.entities.Category;
 import com.shopro.shop1905.entities.Color;
 import com.shopro.shop1905.entities.DetailProduct;
 import com.shopro.shop1905.entities.Product;
+import com.shopro.shop1905.entities.ProductDocument;
 import com.shopro.shop1905.entities.ProductSize;
 import com.shopro.shop1905.entities.ProductSizeColor;
 import com.shopro.shop1905.entities.Size;
@@ -39,6 +41,7 @@ import com.shopro.shop1905.mappers.ProductMapper;
 import com.shopro.shop1905.repositories.BrandRepository;
 import com.shopro.shop1905.repositories.CategoryRepository;
 import com.shopro.shop1905.repositories.ColorRepository;
+import com.shopro.shop1905.repositories.ProductElasticsearchRepository;
 import com.shopro.shop1905.repositories.ProductRepository;
 import com.shopro.shop1905.repositories.ProductSizeColorRepository;
 import com.shopro.shop1905.repositories.ProductSizeRepository;
@@ -57,6 +60,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final SizeRepository sizeRepository;
     private final ProductSizeRepository productSizeRepository;
+    private final ProductElasticsearchRepository productElasticsearchRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final CategoryRepository categoryRepository;
     private final RedisService redisService;
@@ -66,6 +70,33 @@ public class ProductService {
     private final ProductSizeColorRepository productSizeColorRepository;
     @NonFinal
     private final String uploadDir = "uploads/";
+
+    public Page<ProductDTO> searchByName(String name, int size, int page, String sortBy,
+            String orderBy) {
+        Pageable pageable;
+        if (orderBy.equals("asc")) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, sortBy));
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
+        }
+
+        Page<ProductDocument> products = productElasticsearchRepository.findByNameAndStatus(name, true,
+                pageable);
+        Page<ProductDTO> productDTOs = products.map(ProductMapper.INSTANCE::toProductDTO);
+        return productDTOs;
+    }
+
+    public void syncProductsFromMySQLToElasticsearch() {
+        // Fetch all products from MySQL
+        List<Product> productEntities = productRepository.findAll();
+
+        // Convert ProductEntity to ProductDocument
+        for (Product productEntity : productEntities) {
+            ProductDocument productDocument = ProductMapper.INSTANCE.toProductDocument(productEntity);
+            // Save to Elasticsearch
+            productElasticsearchRepository.save(productDocument);
+        }
+    }
 
     public ProductDTO addProduct(ProductAddDTO productAddDTO) {
         // Find subcategory by id with category
@@ -103,8 +134,7 @@ public class ProductService {
                 .price(productAddDTO.price())
                 .percent(productAddDTO.percent())
                 .categoryId(category.getId())
-                .isPublish(productAddDTO.status())
-                .isDraft(!productAddDTO.status())
+                .status(productAddDTO.status())
                 .subCategory(subCategory)
                 .brand(brand)
                 .image(nameImage)
@@ -113,6 +143,7 @@ public class ProductService {
                 .build();
         // Save product again to update the list of product sizes
         productRepository.save(product);
+        productElasticsearchRepository.save(ProductMapper.INSTANCE.toProductDocument(product));
         return ProductMapper.INSTANCE.toProductDTO(product);
     }
 
@@ -293,7 +324,7 @@ public class ProductService {
         } else {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
         }
-        Page<Product> products = productRepository.findAllByIsPublish(true,
+        Page<Product> products = productRepository.findAllByStatus(true,
                 pageable);
         Page<ProductDTO> productDTOs = products.map(ProductMapper.INSTANCE::toProductDTO);
         return productDTOs;
@@ -348,7 +379,7 @@ public class ProductService {
         SubCategory subCategory = subCategoryRepository.findByThump(thump)
                 .orElseThrow(() -> new CustomException(ErrorCode.SUBCATEGORY_NOT_EXISTED));
         System.out.println(subCategory.getName());
-        Page<Product> products = productRepository.findAllByIsPublishAndSubCategory(true, subCategory,
+        Page<Product> products = productRepository.findAllByStatusAndSubCategory(true, subCategory,
                 pageable);
         System.out.println(products.getContent().size());
         Page<ProductDTO> productDTOs = products.map(ProductMapper.INSTANCE::toProductDTO);
@@ -358,7 +389,7 @@ public class ProductService {
     public List<ProductDTO> getPublicNewestProductsByCategory(int size,
             Long idCategory) {
         Pageable pageable = PageRequest.of(0, size);
-        Page<Product> products = productRepository.findAllByIsPublishAndCategoryIdOrderByCreatedDateDesc(true,
+        Page<Product> products = productRepository.findAllByStatusAndCategoryIdOrderByCreatedDateDesc(true,
                 idCategory, pageable);
         Page<ProductDTO> productDTOs = products.map(ProductMapper.INSTANCE::toProductDTO);
         return productDTOs.getContent();
@@ -390,8 +421,7 @@ public class ProductService {
 
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_EXISTED));
-        product.setPublish(true);
-        product.setDraft(false);
+        product.setStatus(true);
         productRepository.save(product);
         return null;
     }
@@ -400,8 +430,7 @@ public class ProductService {
 
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_EXISTED));
-        product.setPublish(false);
-        product.setDraft(true);
+        product.setStatus(false);
         productRepository.save(product);
         return null;
     }

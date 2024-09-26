@@ -27,24 +27,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         @Query("SELECT  p FROM Product p LEFT JOIN FETCH p.detailProduct  LEFT JOIN FETCH p.subCategory LEFT JOIN FETCH p.brand  WHERE p.id = :id")
         Optional<Product> findByIdAndFetchDetailProduct(Long id);
 
-        Page<Product> findAllByIsPublishAndSubCategory(boolean isPublish, SubCategory subCategory, Pageable pageable);
+        Page<Product> findAllByStatusAndSubCategory(boolean status, SubCategory subCategory, Pageable pageable);
 
-        // Page<Product> findAllByIsPublishOrderByCreatedDateDesc(boolean isPublish,
-        // Pageable pageable);
-
-        // @Query("SELECT p.id as id, p.name as name, p.price as price, p.image as
-        // image, p.createdDate as createdDate, p.isPublish as status, SUM(op.quantity)
-        // as totalSales, SUM(op.quantity) * p.price as totalRevenue "
-        // +
-        // "FROM OrderProduct op " +
-        // "JOIN op.productSizeColor psc " +
-        // "JOIN psc.productSize ps " +
-        // "JOIN ps.product p " +
-        // "WHERE op.order.orderStatus != com.shopro.shop1905.enums.OrderStatus.CANCELED
-        // " +
-        // "GROUP BY p.id, p.name, p.price, p.image, p.isPublish ")
-        // Page<ProductTableProjection> findAllProductForTable(Pageable pageable);
-        @Query("SELECT p.id as id, p.name as name, p.price as price, p.image as image, p.createdDate as createdDate, p.isPublish as status, "
+        @Query("SELECT p.id as id, p.name as name, p.price as price, p.image as image, p.createdDate as createdDate, p.status as status, "
                         +
                         "COALESCE(SUM(op.quantity), 0) as totalSales, " +
                         "COALESCE(SUM(op.quantity) * p.price, 0) as totalRevenue " +
@@ -53,10 +38,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                         "LEFT JOIN ps.productSizeColors psc " +
                         "LEFT JOIN psc.orderProducts op " +
                         "ON op.order.orderStatus != com.shopro.shop1905.enums.OrderStatus.CANCELED " +
-                        "GROUP BY p.id, p.name, p.price, p.image, p.createdDate, p.isPublish")
+                        "GROUP BY p.id, p.name, p.price, p.image, p.createdDate, p.status")
         Page<ProductTableProjection> findAllProductForTable(Pageable pageable);
 
-        @Query("SELECT p.id as id, p.name as name, p.price as price, p.image as image, p.createdDate as createdDate, p.isPublish as status, "
+        @Query("SELECT p.id as id, p.name as name, p.price as price, p.image as image, p.createdDate as createdDate, p.status as status, "
                         +
                         "COALESCE(SUM(op.quantity), 0) as totalSales, " +
                         "COALESCE(SUM(op.quantity) * p.price, 0) as totalRevenue " +
@@ -66,10 +51,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                         "LEFT JOIN psc.orderProducts op ON op.order.orderStatus != com.shopro.shop1905.enums.OrderStatus.CANCELED "
                         +
                         "WHERE p.categoryId = :idCategory " +
-                        "GROUP BY p.id, p.name, p.price, p.image, p.createdDate, p.isPublish")
+                        "GROUP BY p.id, p.name, p.price, p.image, p.createdDate, p.status")
         Page<ProductTableProjection> findAllProductForTableByCategory(Long idCategory, Pageable pageable);
 
-        @Query("SELECT p.id as id, p.name as name, p.price as price, p.image as image, p.createdDate as createdDate, p.isPublish as status, "
+        @Query("SELECT p.id as id, p.name as name, p.price as price, p.image as image, p.createdDate as createdDate, p.status as status, "
                         +
                         "COALESCE(SUM(op.quantity), 0) as totalSales, " +
                         "COALESCE(SUM(op.quantity) * p.price, 0) as totalRevenue " +
@@ -79,21 +64,15 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                         "LEFT JOIN psc.orderProducts op ON op.order.orderStatus != com.shopro.shop1905.enums.OrderStatus.CANCELED "
                         +
                         "WHERE p.subCategory.id = :idSubCategory " +
-                        "GROUP BY p.id, p.name, p.price, p.image, p.createdDate, p.isPublish")
+                        "GROUP BY p.id, p.name, p.price, p.image, p.createdDate, p.status")
         Page<ProductTableProjection> findAllProductForTableBySubCategory(Long idSubCategory, Pageable pageable);
 
-        Page<Product> findAllByIsPublish(boolean isPublish, Pageable pageable);
+        Page<Product> findAllByStatus(boolean status, Pageable pageable);
 
-        Page<Product> findAllByIsPublishAndCategoryIdOrderByCreatedDateDesc(boolean isPublish, Long categoryId,
+        Page<Product> findAllByStatusAndCategoryIdOrderByCreatedDateDesc(boolean status, Long categoryId,
                         Pageable pageable);
 
         // Page<Product> findAllByIsDraftOrderByCreatedDateDesc(boolean isDraft,
         // Pageable pageable);
 
-        @Transactional
-        @Modifying
-        @Query("UPDATE Product p SET p.isPublish = true, p.isDraft = false WHERE p.id = :id")
-        int updatePublishProductById(@Param("id") Long id);
-
-        // List<Product> findAllByOrderByNameDesc();
 }

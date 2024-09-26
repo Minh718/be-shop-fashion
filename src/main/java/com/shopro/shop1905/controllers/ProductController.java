@@ -33,6 +33,8 @@ import com.shopro.shop1905.dtos.dtosRes.ProductDetailDTO;
 import com.shopro.shop1905.dtos.dtosRes.ProductSizeColorDTO;
 import com.shopro.shop1905.dtos.dtosRes.ProductsHomePage;
 import com.shopro.shop1905.dtos.dtosRes.projections.ProductTableProjection;
+import com.shopro.shop1905.entities.Product;
+import com.shopro.shop1905.entities.ProductDocument;
 import com.shopro.shop1905.repositories.ProductRepository;
 import com.shopro.shop1905.services.ProductService;
 
@@ -65,6 +67,29 @@ public class ProductController {
                                 .code(1000)
                                 .message("update sản phẩm thành công")
                                 .build());
+        }
+
+        @GetMapping("/search")
+        public ApiMetaRes<List<ProductDTO>> searchProducts(
+                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "10") int size,
+                        @RequestParam(defaultValue = "createdDate") String sortBy,
+                        @RequestParam(defaultValue = "desc") String order,
+                        @RequestParam String query) {
+                Page<ProductDTO> productPage = productService.searchByName(query, size, page, sortBy, order);
+                MetadataDTO metadata = new MetadataDTO(
+                                productPage.getTotalElements(),
+                                productPage.getTotalPages(),
+                                productPage.getNumber(),
+                                productPage.getSize());
+                return ApiMetaRes.<List<ProductDTO>>builder().code(1000).message("lấy danh sách thành công")
+                                .result(productPage.getContent()).metadata(metadata).build();
+        }
+
+        @GetMapping("/aync")
+        public String syncProducts() {
+                productService.syncProductsFromMySQLToElasticsearch();
+                return "Synchronization complete!";
         }
 
         @Caching(evict = {

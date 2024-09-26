@@ -7,6 +7,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.elasticsearch.annotations.Document;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -35,9 +37,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(indexes = {
-        @Index(name = "idx_name", columnList = "name"),
-})
 public class Product {
 
     @Id
@@ -52,8 +51,8 @@ public class Product {
     // @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Builder.Default
     private LocalDateTime createdDate = LocalDateTime.now();
-    private boolean isPublish;
-    private boolean isDraft;
+    @Builder.Default
+    private boolean status = true;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subCate_id", referencedColumnName = "id")
     private SubCategory subCategory;
@@ -71,14 +70,6 @@ public class Product {
     @Builder.Default
 
     private List<ProductSize> productSizes = new ArrayList<>();
-
-    @Override
-    public String toString() {
-        return "Product [categoryId=" + categoryId + ", createdDate=" + createdDate + ", id=" + id + ", image=" + image
-                + ", isDraft=" + isDraft + ", isPublish=" + isPublish + ", name=" + name + ", percent=" + percent
-                + ", price=" + price + ", productDetail=" + detailProduct + ", productSizes=" + productSizes
-                + ", subCategory=" + subCategory + ", totalAccess=" + "]";
-    }
 
     @Override
     public boolean equals(Object obj) {

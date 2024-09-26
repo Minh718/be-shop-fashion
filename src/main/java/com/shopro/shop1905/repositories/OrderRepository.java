@@ -45,7 +45,7 @@ public interface OrderRepository extends JpaRepository<TblOrder, Long> {
 
         // @Query("SELECT new
         // com.shopro.shop1905.dtos.dtosRes.StatisticOrderDTO(COUNT(o),
-        // SUM(o.paymentFee), SUM(o.totalQuantity)) "
+        // SUM(o.totalAmount), SUM(o.totalQuantity)) "
         // +
         // "FROM TblOrder o " +
 
@@ -53,15 +53,15 @@ public interface OrderRepository extends JpaRepository<TblOrder, Long> {
         // com.shopro.shop1905.enums.OrderStatus.CANCELED")
         @Query("SELECT new com.shopro.shop1905.dtos.dtosRes.StatisticOrderDTO(" +
                         "COALESCE(COUNT(o), 0), " +
-                        "COALESCE(SUM(o.paymentFee), 0), " +
-                        "COALESCE(SUM(o.totalQuantity), 0)) " +
-                        "FROM TblOrder o " +
+                        "COALESCE(SUM(o.totalAmount), 0), " +
+                        "COALESCE(SUM(op.quantity), 0)) " +
+                        "FROM TblOrder o JOIN o.orderProducts op " +
                         "WHERE o.createdAt BETWEEN :startDate AND :endDate AND o.orderStatus != com.shopro.shop1905.enums.OrderStatus.CANCELED")
         StatisticOrderDTO findStatisticOrderByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
 
         @Query(nativeQuery = true, value = "SELECT \n" +
                         " days.date AS date,\n" +
-                        " COALESCE(SUM(o.payment_fee), 0) AS revenue\n" +
+                        " COALESCE(SUM(o.total_amount), 0) AS revenue\n" +
                         "FROM \n" +
                         " (SELECT CURDATE() - INTERVAL n DAY AS date\n" +
                         " FROM (SELECT 0 AS n UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6) AS nums) AS days\n"
@@ -77,10 +77,10 @@ public interface OrderRepository extends JpaRepository<TblOrder, Long> {
 
         @Query(nativeQuery = true, value = "SELECT \n" +
                         " months.month AS month,\n" +
-                        " COALESCE(SUM(o.payment_fee), 0) AS revenue\n" +
+                        " COALESCE(SUM(o.total_amount), 0) AS revenue\n" +
                         "FROM \n" +
                         " (SELECT DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL n MONTH), '%Y-%m') AS month\n" +
-                        " FROM (SELECT 0 AS n UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6) AS nums) AS months\n"
+                        " FROM (SELECT 0 AS n UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6) AS nums) AS months\n"
                         +
                         "LEFT JOIN \n" +
                         " tbl_order o ON DATE_FORMAT(o.created_at, '%Y-%m') = months.month \n" +
@@ -94,7 +94,7 @@ public interface OrderRepository extends JpaRepository<TblOrder, Long> {
 
         @Query(nativeQuery = true, value = "SELECT \n" +
                         " weeks.week AS week,\n" +
-                        " COALESCE(SUM(o.payment_fee), 0) AS revenue\n" +
+                        " COALESCE(SUM(o.total_amount), 0) AS revenue\n" +
                         "FROM \n" +
                         " (SELECT WEEK(DATE_SUB(CURDATE(), INTERVAL n WEEK), 1) AS week\n" +
                         " FROM (SELECT 0 AS n UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6) AS nums) AS weeks\n"
@@ -111,7 +111,7 @@ public interface OrderRepository extends JpaRepository<TblOrder, Long> {
 
         @Query(nativeQuery = true, value = "SELECT \n" +
                         " years.year AS year,\n" +
-                        " COALESCE(SUM(o.payment_fee), 0) AS revenue\n" +
+                        " COALESCE(SUM(o.total_amount), 0) AS revenue\n" +
                         "FROM \n" +
                         " (SELECT YEAR(CURDATE()) - n AS year\n" +
                         " FROM (SELECT 0 AS n UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6) AS nums) AS years\n"

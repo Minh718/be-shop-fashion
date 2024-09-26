@@ -5,20 +5,15 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shopro.shop1905.dtos.dtosReq.ProductSizeAddDTO;
-import com.shopro.shop1905.dtos.dtosReq.ProductSizeIncreDTO;
 import com.shopro.shop1905.dtos.dtosRes.ApiMetaRes;
-import com.shopro.shop1905.dtos.dtosRes.ApiRes;
 import com.shopro.shop1905.dtos.dtosRes.MetadataDTO;
 import com.shopro.shop1905.dtos.dtosRes.ProductSizeColorBestSelling;
 import com.shopro.shop1905.services.ProductSizeColorService;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 /**

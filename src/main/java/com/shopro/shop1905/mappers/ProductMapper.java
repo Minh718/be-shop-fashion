@@ -11,12 +11,22 @@ import com.shopro.shop1905.dtos.dtosRes.ProductDTO;
 import com.shopro.shop1905.dtos.dtosRes.ProductDetailAdmin;
 import com.shopro.shop1905.dtos.dtosRes.ProductDetailDTO;
 import com.shopro.shop1905.entities.Product;
+import com.shopro.shop1905.entities.ProductDocument;
 
 @Mapper
 public interface ProductMapper {
     ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
 
     Product toProduct(ProductDTO productDTO);
+
+    @Mapping(target = "brandId", source = "brand.id")
+    @Mapping(target = "subCategoryId", source = "subCategory.id")
+    @Mapping(target = "thump", source = "subCategory.thump")
+    ProductDocument toProductDocument(Product product);
+
+    ProductDTO toProductDTO(ProductDocument product);
+
+    List<ProductDTO> productDocumenttoProductDTOs(List<ProductDocument> productDocuments);
 
     // @Mapping(ignore = true, target = "detailProduct")
     ProductDetailDTO toProductDetailDTO(Product product);
