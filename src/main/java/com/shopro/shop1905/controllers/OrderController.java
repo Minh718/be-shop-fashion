@@ -1,6 +1,15 @@
 package com.shopro.shop1905.controllers;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shopro.shop1905.dtos.dtosReq.OrderDTO;
@@ -12,18 +21,7 @@ import com.shopro.shop1905.dtos.dtosRes.OrderResDTO;
 import com.shopro.shop1905.services.OrderService;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-
-import java.io.IOException;
-import java.util.List;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,8 +30,8 @@ public class OrderController {
         private final OrderService orderService;
 
         @PostMapping("/save")
-        public ApiRes<String> save(@RequestBody OrderDTO order, HttpServletRequest request) throws IOException {
-                return ApiRes.<String>builder().code(1000).message("Create order success")
+        public ApiRes<DetailOrderDTO> save(@RequestBody OrderDTO order, HttpServletRequest request) throws IOException {
+                return ApiRes.<DetailOrderDTO>builder().code(1000).message("Create order success")
                                 .result(orderService.save(order, request))
                                 .build();
         }

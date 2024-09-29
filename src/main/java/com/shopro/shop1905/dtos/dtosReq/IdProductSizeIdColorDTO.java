@@ -1,7 +1,5 @@
 package com.shopro.shop1905.dtos.dtosReq;
 
-import java.util.Set;
-
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

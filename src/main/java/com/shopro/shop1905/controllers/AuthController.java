@@ -22,7 +22,6 @@ import com.shopro.shop1905.services.AuthService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.val;
 
 @RestController
 @RequestMapping("api/auth")

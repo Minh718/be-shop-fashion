@@ -1,7 +1,5 @@
 package com.shopro.shop1905.dtos.dtosReq;
 
-import com.shopro.shop1905.entities.ProductSize;
-
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

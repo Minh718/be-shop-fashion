@@ -4,8 +4,6 @@ import java.time.LocalDate;
 
 import com.shopro.shop1905.enums.TypeVoucher;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 

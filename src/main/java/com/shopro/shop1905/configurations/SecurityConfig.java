@@ -11,12 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.util.WebUtils;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,16 +36,6 @@ public class SecurityConfig {
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
                 httpSecurity.csrf(AbstractHttpConfigurer::disable);
-                // httpSecurity.cors(cors -> {
-                // cors.configurationSource(request -> {
-                // CorsConfiguration corsConfiguration = new CorsConfiguration();
-                // corsConfiguration.applyPermitDefaultValues();
-                // corsConfiguration.addAllowedMethod(HttpMethod.PUT);
-                // corsConfiguration.addAllowedMethod(HttpMethod.DELETE);
-                // corsConfiguration.addAllowedMethod(HttpMethod.PATCH);
-                // return corsConfiguration;
-                // });
-                // });
                 httpSecurity.authorizeHttpRequests(
                                 request -> request.requestMatchers(PUBLIC_ENDPOINTS)
                                                 .permitAll()
@@ -64,8 +49,6 @@ public class SecurityConfig {
                                                 .decoder(customJwtDecoder)
                                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
-                // httpSecurity.exceptionHandling(exceptionHandling -> exceptionHandling
-                // .authenticationEntryPoint(customAuthenticationEntryPoint));
                 return httpSecurity.build();
         }
 
@@ -81,15 +64,40 @@ public class SecurityConfig {
         }
 
         public String tokenExtractor(HttpServletRequest request) {
+                // Extract token from Authorization header (Bearer token)
                 String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-                if (header != null)
-                        return header.replace("Bearer ", "");
+                if (header != null && header.startsWith("Bearer ")) {
+                        return header.replace("Bearer ", "").trim();
+                }
+
+                // Check if the request path starts with /ws
                 String path = request.getServletPath();
                 if (path.startsWith("/ws")) {
-                        String token = request.getParameter("access_token");
-                        if (token != null)
-                                return token;
+                        // Extract token from cookies
+                        Cookie[] cookies = request.getCookies();
+                        if (cookies != null) {
+                                String token = null;
+                                String userId = null;
+                                for (Cookie cookie : cookies) {
+                                        // Check for accessToken cookie
+                                        if ("accessToken".equals(cookie.getName())) {
+                                                token = cookie.getValue();
+                                        }
+                                        // Check for x-user-id cookie
+                                        else if ("x-user-id".equals(cookie.getName())) {
+                                                userId = cookie.getValue();
+                                        }
+                                }
+                                // If both accessToken and x-user-id are present, set the userId as a request
+                                // attribute
+                                if (token != null && userId != null) {
+                                        request.setAttribute("x-user-id", userId);
+                                        return token;
+                                }
+                        }
                 }
+
+                // Return null if no token is found
                 return null;
         }
 

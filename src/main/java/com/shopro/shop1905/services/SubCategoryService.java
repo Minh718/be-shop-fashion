@@ -3,12 +3,10 @@ package com.shopro.shop1905.services;
 import org.springframework.stereotype.Service;
 
 import com.shopro.shop1905.dtos.dtosReq.SubCategoryAddDTO;
-import com.shopro.shop1905.dtos.dtosReq.SubCategoryDTO;
 import com.shopro.shop1905.entities.Category;
 import com.shopro.shop1905.entities.SubCategory;
 import com.shopro.shop1905.exceptions.CustomException;
 import com.shopro.shop1905.exceptions.ErrorCode;
-import com.shopro.shop1905.mappers.SubCategoryMapper;
 import com.shopro.shop1905.repositories.CategoryRepository;
 import com.shopro.shop1905.repositories.SubCategoryRepository;
 

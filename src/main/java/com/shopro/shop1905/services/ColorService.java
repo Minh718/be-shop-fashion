@@ -1,5 +1,7 @@
 package com.shopro.shop1905.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.shopro.shop1905.dtos.dtosRes.ColorRes;
@@ -7,9 +9,7 @@ import com.shopro.shop1905.dtos.dtosRes.ProductColorsAdmin;
 import com.shopro.shop1905.entities.Color;
 import com.shopro.shop1905.mappers.ColorMapper;
 import com.shopro.shop1905.repositories.ColorRepository;
-import java.util.List;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Service

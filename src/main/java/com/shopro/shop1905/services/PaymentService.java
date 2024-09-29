@@ -14,9 +14,9 @@ import java.util.*;
 public class PaymentService {
     private final VNPayConfig vnPayConfig;
 
-    public String createVnPayPayment(HttpServletRequest request, long amount, Long orderInfo) {
+    public String createVnPayPayment(HttpServletRequest request, double amount, Long orderInfo) {
         Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
-        vnpParamsMap.put("vnp_Amount", String.valueOf(amount * 2500000L));
+        vnpParamsMap.put("vnp_Amount", String.valueOf(amount * 2500000d));
         vnpParamsMap.put("vnp_OrderInfo", Long.toString(orderInfo));
 
         // if (bankCode != null && !bankCode.isEmpty()) {

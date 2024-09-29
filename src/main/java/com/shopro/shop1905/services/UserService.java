@@ -1,29 +1,16 @@
 package com.shopro.shop1905.services;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import com.shopro.shop1905.constants.RoleUser;
-import com.shopro.shop1905.dtos.dtosRes.Token;
-import com.shopro.shop1905.dtos.dtosRes.UserInfo;
 import com.shopro.shop1905.dtos.dtosRes.UserInfoToken;
 import com.shopro.shop1905.entities.User;
 import com.shopro.shop1905.exceptions.CustomException;
 import com.shopro.shop1905.exceptions.ErrorCode;
-import com.shopro.shop1905.helpers.HashValue;
 import com.shopro.shop1905.mappers.UserMapper;
 import com.shopro.shop1905.repositories.UserRepository;
-import com.shopro.shop1905.util.GetReToken;
-import com.shopro.shop1905.util.RamdomKeyUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
@@ -32,7 +19,6 @@ import lombok.experimental.NonFinal;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final JwtService jwtService;
     private final RedisService redisService;
 
     @NonFinal
@@ -46,17 +32,6 @@ public class UserService {
     @NonFinal
     @Value("${security.jwt.refresh-key}")
     String refreshKey;
-    // public Optional<User> findUserByEmail(String email) {
-    // return userRepository.findByEmail(email);
-    // }
-
-    // public Optional<User> findUserById(String id) {
-    // return userRepository.findById(id);
-    // }
-
-    // public User saveUserInDatabase(User user) {
-    // return userRepository.save(user);
-    // }
 
     public UserInfoToken getMyInfo() {
         var context = SecurityContextHolder.getContext();

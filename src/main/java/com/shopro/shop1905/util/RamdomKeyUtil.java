@@ -2,7 +2,6 @@ package com.shopro.shop1905.util;
 
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.Random;
 
 public class RamdomKeyUtil {
     public static String generateRandomKey() {

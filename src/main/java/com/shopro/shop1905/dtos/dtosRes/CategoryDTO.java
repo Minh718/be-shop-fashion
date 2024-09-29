@@ -3,7 +3,6 @@ package com.shopro.shop1905.dtos.dtosRes;
 import java.util.Set;
 
 import com.shopro.shop1905.dtos.dtosReq.SubCategoryDTO;
-import com.shopro.shop1905.entities.SubCategory;
 
 import lombok.Data;
 

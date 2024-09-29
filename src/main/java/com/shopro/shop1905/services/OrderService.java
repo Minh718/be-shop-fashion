@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +14,17 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.connection.SortParameters.Order;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.shopro.shop1905.configurations.VNPayConfig;
+import com.shopro.shop1905.controllers.SocketController;
 import com.shopro.shop1905.dtos.dtosReq.ItemCheckoutReq;
 import com.shopro.shop1905.dtos.dtosReq.OrderDTO;
 import com.shopro.shop1905.dtos.dtosRes.CheckoutRes;
 import com.shopro.shop1905.dtos.dtosRes.DetailOrderDTO;
+import com.shopro.shop1905.dtos.dtosRes.OrderNotificationPayload;
 import com.shopro.shop1905.dtos.dtosRes.OrderResDTO;
 import com.shopro.shop1905.entities.Cart;
 import com.shopro.shop1905.entities.CartProductSizeColor;
@@ -33,23 +32,18 @@ import com.shopro.shop1905.entities.OrderProduct;
 import com.shopro.shop1905.entities.Payment;
 import com.shopro.shop1905.entities.Product;
 import com.shopro.shop1905.entities.ProductSizeColor;
-import com.shopro.shop1905.entities.ProductSizeColor;
-import com.shopro.shop1905.entities.Size;
 import com.shopro.shop1905.entities.TblOrder;
 import com.shopro.shop1905.entities.User;
 import com.shopro.shop1905.enums.OrderStatus;
 import com.shopro.shop1905.enums.PaymentMethod;
 import com.shopro.shop1905.enums.PaymentStatus;
-import com.shopro.shop1905.enums.ShippingStatus;
 import com.shopro.shop1905.exceptions.CustomException;
 import com.shopro.shop1905.exceptions.ErrorCode;
 import com.shopro.shop1905.mappers.OrderMapper;
 import com.shopro.shop1905.repositories.CartProductSizeColorRepository;
-import com.shopro.shop1905.repositories.CartRepository;
 import com.shopro.shop1905.repositories.OrderRepository;
 import com.shopro.shop1905.repositories.ProductSizeColorRepository;
 import com.shopro.shop1905.repositories.UserRepository;
-import com.shopro.shop1905.util.VNPayUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -65,11 +59,9 @@ public class OrderService {
     private final CartProductSizeColorRepository cartProductSizeColorRepository;
     private final CheckoutService checkoutService;
     private final RedisService redisService;
-    private final CartRepository cartRepository;
     private final UserRepository userRepository;
-    private final CartService cartService;
     private final PaymentService paymentService;
-    private final VNPayConfig vnPayConfig;
+    private final SocketController socketController;
     private final ProductSizeColorRepository productSizeColorRepository;
     @Autowired
     @Lazy
@@ -82,7 +74,7 @@ public class OrderService {
     }
 
     @Transactional(rollbackOn = CustomException.class)
-    public String save(OrderDTO order, HttpServletRequest request) {
+    public DetailOrderDTO save(OrderDTO order, HttpServletRequest request) {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user = userRepository.findByIdWithCart(userId)
@@ -132,15 +124,31 @@ public class OrderService {
                 user, payment);
         productOrders.forEach(orderProduct -> orderProduct.setOrder(newOrder));
         newOrder.setOrderProducts(productOrders);
+        // notify order success for all users in the system
+        // self.processNotifyOrder(newOrder, user);
+        processNotifyOrder(newOrder, user);
         if (order.getPaymentMethod() != PaymentMethod.VNPAY) {
             newOrder.setOrderStatus(OrderStatus.CONFIRMED);
         } else {
             String urlPayment = paymentService.createVnPayPayment(request,
                     newOrder.getTotalAmount(), newOrder.getId());
             newOrder.setUrlPayment(urlPayment);
-            return urlPayment;
         }
-        return "";
+        return OrderMapper.INSTANCE.toDetailOrderDTO(newOrder);
+    }
+
+    // @Async("notifyOrder")
+    private void processNotifyOrder(TblOrder order, User user) {
+        String message = String.format(
+                "%s customer has placed an order sucessfully. Thank you for %s' purchase!",
+                order.getFullName(), order.getFullName());
+
+        // Notify all users, including user details like image
+        OrderNotificationPayload payload = new OrderNotificationPayload(
+                user.getPicture(),
+                message);
+
+        socketController.notifyOrderSuccess(payload);
     }
 
     public void confirmPaymentOrder(Map<String, String> reqParams) {
@@ -195,8 +203,6 @@ public class OrderService {
             redisService.incrementKey("productSizeColor:" + productSizeColor.getId(), -quantityBuy);
             redisService.incrementKey("productSize:" + productSizeColor.getProductSize().getId(), -quantityBuy);
             cartProductSizeColorRepository.delete(cpsc);
-            cart.setQuantity(cart.getQuantity() - 1);
-            cartRepository.save(cart);
         } else {
             rollbackProductOrders(productOrders);
             throw new CustomException(ErrorCode.ERROR_SYSTEM);
@@ -218,6 +224,7 @@ public class OrderService {
         order.setOrderStatus(OrderStatus.PENDING);
         order.setUser(user);
         order.setPayment(payment);
+        payment.setOrder(order);
         return orderRepository.save(order);
 
     }

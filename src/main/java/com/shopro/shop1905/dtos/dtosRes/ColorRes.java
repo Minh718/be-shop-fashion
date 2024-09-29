@@ -1,6 +1,5 @@
 package com.shopro.shop1905.dtos.dtosRes;
 
-import lombok.Builder;
 import lombok.Data;
 
 @Data

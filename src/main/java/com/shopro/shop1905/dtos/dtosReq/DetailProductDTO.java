@@ -1,7 +1,6 @@
 package com.shopro.shop1905.dtos.dtosReq;
 
 import java.util.List;
-import java.util.Set;
 
 import lombok.Data;
 

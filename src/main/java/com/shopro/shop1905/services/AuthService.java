@@ -29,7 +29,6 @@ import com.shopro.shop1905.exceptions.CustomException;
 import com.shopro.shop1905.exceptions.ErrorCode;
 import com.shopro.shop1905.helpers.HashValue;
 import com.shopro.shop1905.mappers.UserMapper;
-import com.shopro.shop1905.repositories.CartRepository;
 import com.shopro.shop1905.repositories.ChatBoxRepository;
 import com.shopro.shop1905.repositories.RoleRepository;
 import com.shopro.shop1905.repositories.UserRepository;
@@ -50,10 +49,8 @@ public class AuthService {
     MailService mailService;
     RedisService redisService;
     UserRepository userRepository;
-    UserService userService;
     JwtService jwtService;
     RoleRepository roleRepository;
-    CartRepository cartRepository;
     ChatBoxRepository chatBoxRepository;
     VoucherService voucherService;
     OutboundInfoUserGoogle outboundInfoUserGoogle;

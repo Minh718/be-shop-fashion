@@ -1,9 +1,7 @@
 package com.shopro.shop1905.repositories;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -13,7 +11,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.shopro.shop1905.dtos.dtosRes.StatisticOrderDTO;
-import com.shopro.shop1905.dtos.dtosRes.StatisticRevennueDTO;
 import com.shopro.shop1905.entities.TblOrder;
 import com.shopro.shop1905.entities.User;
 import com.shopro.shop1905.enums.OrderStatus;

@@ -2,10 +2,7 @@ package com.shopro.shop1905.dtos.dtosRes;
 
 import java.util.Set;
 
-import com.shopro.shop1905.dtos.dtosReq.VoucherDTO;
-import com.shopro.shop1905.entities.Voucher;
 import com.shopro.shop1905.enums.OrderStatus;
-import com.shopro.shop1905.enums.PaymentMethod;
 import com.shopro.shop1905.enums.ShippingStatus;
 
 import jakarta.persistence.EnumType;
@@ -15,8 +12,8 @@ import lombok.Data;
 @Data
 public class DetailOrderDTO {
     private Long id;
-    private long totalAmount;
-    private Long discount;
+    private double totalAmount;
+    private double discount;
     private String shippingAddress;
     private String phone;
     private String fullName;

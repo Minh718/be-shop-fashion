@@ -1,6 +1,5 @@
 package com.shopro.shop1905.dtos.dtosRes;
 
-import java.lang.reflect.Type;
 import java.time.LocalDate;
 
 import com.shopro.shop1905.enums.TypeLogin;
@@ -26,5 +25,4 @@ public class UserInfoToken {
     private TypeLogin typeLogin;
     private String accessToken;
     private String refreshToken;
-    private CartDTO cart;
 }

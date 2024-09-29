@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shopro.shop1905.dtos.dtosReq.SubCategoryAddDTO;
-import com.shopro.shop1905.dtos.dtosReq.SubCategoryDTO;
 import com.shopro.shop1905.dtos.dtosRes.ApiRes;
 import com.shopro.shop1905.services.SubCategoryService;
 

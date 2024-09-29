@@ -25,5 +25,4 @@ public class UserInfo {
     private TypeLogin typeLogin;
     private LocalDate dob;
     private Set<Role> roles;
-    CartDTO cart;
 }

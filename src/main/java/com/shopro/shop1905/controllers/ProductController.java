@@ -1,9 +1,6 @@
 package com.shopro.shop1905.controllers;
 
 import java.util.List;
-import java.util.Set;
-
-import javax.print.attribute.standard.Media;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -22,20 +19,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shopro.shop1905.dtos.dtosReq.ProductAddDTO;
 import com.shopro.shop1905.dtos.dtosReq.IdProductSizeIdColorDTO;
+import com.shopro.shop1905.dtos.dtosReq.ProductAddDTO;
 import com.shopro.shop1905.dtos.dtosRes.ApiMetaRes;
 import com.shopro.shop1905.dtos.dtosRes.ApiRes;
 import com.shopro.shop1905.dtos.dtosRes.MetadataDTO;
 import com.shopro.shop1905.dtos.dtosRes.ProductDTO;
 import com.shopro.shop1905.dtos.dtosRes.ProductDetailAdmin;
 import com.shopro.shop1905.dtos.dtosRes.ProductDetailDTO;
-import com.shopro.shop1905.dtos.dtosRes.ProductSizeColorDTO;
 import com.shopro.shop1905.dtos.dtosRes.ProductsHomePage;
 import com.shopro.shop1905.dtos.dtosRes.projections.ProductTableProjection;
-import com.shopro.shop1905.entities.Product;
-import com.shopro.shop1905.entities.ProductDocument;
-import com.shopro.shop1905.repositories.ProductRepository;
 import com.shopro.shop1905.services.ProductService;
 
 import jakarta.validation.constraints.NotNull;
@@ -52,7 +45,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductController {
 
         private final ProductService productService;
-        private final ProductRepository productRepository;
 
         @Caching(evict = {
                         @CacheEvict(value = "productsBySubCategory", allEntries = true),

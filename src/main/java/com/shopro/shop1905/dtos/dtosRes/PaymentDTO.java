@@ -1,7 +1,5 @@
 package com.shopro.shop1905.dtos.dtosRes;
 
-import java.time.LocalDateTime;
-
 import com.shopro.shop1905.enums.PaymentMethod;
 import com.shopro.shop1905.enums.PaymentStatus;
 
@@ -15,7 +13,7 @@ public class PaymentDTO {
     private PaymentMethod paymentMethod;
     private long amount;
     private String transactionID;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private String createdAt;
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 }

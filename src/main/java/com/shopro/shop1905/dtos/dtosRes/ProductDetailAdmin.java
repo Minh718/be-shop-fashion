@@ -1,13 +1,8 @@
 package com.shopro.shop1905.dtos.dtosRes;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 import com.shopro.shop1905.dtos.dtosReq.DetailProductDTO;
-import com.shopro.shop1905.dtos.dtosReq.SubCategoryDTO;
-import com.shopro.shop1905.entities.Brand;
-import com.shopro.shop1905.entities.DetailProduct;
 
 import lombok.Data;
 

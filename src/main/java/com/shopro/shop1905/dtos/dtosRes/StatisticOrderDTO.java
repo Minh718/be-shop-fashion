@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StatisticOrderDTO {
     private long totalOrders;
-    private long totalRevenue;
+    private double totalRevenue;
     private long totalQuantity;
 
 }

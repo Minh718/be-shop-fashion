@@ -1,8 +1,6 @@
 package com.shopro.shop1905.configurations;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import javax.net.ssl.SSLContext;
 
@@ -13,10 +11,8 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
@@ -29,7 +25,6 @@ import co.elastic.clients.transport.rest_client.RestClientTransport;
 @EnableElasticsearchRepositories(basePackages = "com.shopro.shop1905.repositories")
 class ElasitcSearchConfig {
         @Autowired
-        private ApplicationContext applicationContext;
 
         @Value("${elasticsearch.host}")
         private String host;

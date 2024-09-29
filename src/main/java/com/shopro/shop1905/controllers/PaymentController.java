@@ -4,14 +4,12 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shopro.shop1905.services.OrderService;
-import com.shopro.shop1905.services.PaymentService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("api/payment")
 @RequiredArgsConstructor
 public class PaymentController {
-    private final PaymentService paymentService;
     private final OrderService orderService;
 
     @Value("${frontend_host:http://localhost:3000}")

@@ -1,7 +1,5 @@
 package com.shopro.shop1905.dtos.dtosRes;
 
-import com.shopro.shop1905.dtos.dtosReq.SubCategoryDTO;
-
 import lombok.Data;
 
 @Data

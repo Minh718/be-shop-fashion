@@ -6,9 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.shopro.shop1905.entities.Role;
 import com.shopro.shop1905.entities.SubCategory;
-import com.shopro.shop1905.entities.User;
 
 import io.lettuce.core.dynamic.annotation.Param;
 

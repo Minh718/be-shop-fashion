@@ -1,16 +1,12 @@
 package com.shopro.shop1905.services;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.shopro.shop1905.dtos.dtosReq.AddSizeToCategoryReq;
 import com.shopro.shop1905.dtos.dtosReq.CategoryReqDTO;
-import com.shopro.shop1905.dtos.dtosReq.CategorySizesDTO;
 import com.shopro.shop1905.dtos.dtosReq.SizeUpdateDTO;
 import com.shopro.shop1905.dtos.dtosReq.UpdateSizeDTO;
 import com.shopro.shop1905.dtos.dtosRes.CategoryDTO;
@@ -22,7 +18,6 @@ import com.shopro.shop1905.mappers.CategoryMapper;
 import com.shopro.shop1905.repositories.CategoryRepository;
 import com.shopro.shop1905.repositories.SizeRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 /**

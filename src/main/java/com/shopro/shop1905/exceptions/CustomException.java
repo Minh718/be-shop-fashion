@@ -13,7 +13,6 @@ public class CustomException extends RuntimeException {
     }
 
     private ErrorCode errorCode;
-    private String message;
 
     public ErrorCode getErrorCode() {
         return errorCode;

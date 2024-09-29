@@ -1,3 +1,4 @@
+
 package com.shopro.shop1905.configurations;
 
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +12,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
-    public void configureMessageBroker(@SuppressWarnings("null") MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/all", "/specific");
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic", "/specific");
         config.setApplicationDestinationPrefixes("/app");
     }
 
@@ -20,14 +21,7 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
                 .setAllowedOrigins("http://localhost:3000") // Only allow your frontend origin
-                .setAllowedOriginPatterns("http://localhost:3000") // For Spring 5.3+
                 .withSockJS() // Enable SockJS fallback for older browsers
                 .setSessionCookieNeeded(true); // Enable sending session cookies
-
-        // Regular WebSocket connection (without SockJS) if you want to support both
-        registry.addEndpoint("/ws")
-                .setAllowedOrigins("http://localhost:3000")
-                .setAllowedOriginPatterns("http://localhost:3000") // For Spring 5.3+
-                .setAllowedOriginPatterns("http://localhost:3000");
     }
 }

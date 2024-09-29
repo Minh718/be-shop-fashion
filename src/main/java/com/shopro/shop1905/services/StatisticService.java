@@ -1,17 +1,11 @@
 package com.shopro.shop1905.services;
 
-import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
-import com.shopro.shop1905.dtos.dtosRes.ProductSizeColorBestSelling;
 import com.shopro.shop1905.dtos.dtosRes.StatisticCompare;
 import com.shopro.shop1905.dtos.dtosRes.StatisticOrderDTO;
 import com.shopro.shop1905.dtos.dtosRes.StatisticRevennueDTO;
@@ -27,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 public class StatisticService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
-    private final ProductSizeColorService productSizeColorService;
 
     public StatisticsDTO getStatisticsDashboard(TypeStatistic type) {
         LocalDateTime now = LocalDateTime.now();
@@ -71,26 +64,28 @@ public class StatisticService {
         StatisticOrderDTO currentStatistic = orderRepository.findStatisticOrderByCreatedAtBetween(start, end);
 
         // Calculate percentage changes with zero-division check
-        float percentTotalOrders = calculatePercentageChange(prevStatistic.getTotalOrders(),
+        double percentTotalOrders = calculatePercentageChange(prevStatistic.getTotalOrders(),
                 currentStatistic.getTotalOrders());
-        float percentTotalRevenue = calculatePercentageChange(prevStatistic.getTotalRevenue(),
+        double percentTotalRevenue = calculatePercentageChange(prevStatistic.getTotalRevenue(),
                 currentStatistic.getTotalRevenue());
-        float percentTotalQuantity = calculatePercentageChange(prevStatistic.getTotalQuantity(),
+        double percentTotalQuantity = calculatePercentageChange(prevStatistic.getTotalQuantity(),
                 currentStatistic.getTotalQuantity());
 
         // Retrieve new user counts
         long prevTotalUser = userRepository.countTotalNewUser(prev, start);
         long currentTotalUser = userRepository.countTotalNewUser(start, end);
 
-        float percentNewCustomers = calculatePercentageChange(prevTotalUser,
+        double percentNewCustomers = calculatePercentageChange(prevTotalUser,
                 currentTotalUser);
 
         // Create and return the DTO
-        StatisticCompare totalOrders = new StatisticCompare(currentStatistic.getTotalOrders(), percentTotalOrders);
-        StatisticCompare totalRevenue = new StatisticCompare(currentStatistic.getTotalRevenue(), percentTotalRevenue);
-        StatisticCompare totalQuantity = new StatisticCompare(currentStatistic.getTotalQuantity(),
+        StatisticCompare<Long> totalOrders = new StatisticCompare<>(currentStatistic.getTotalOrders(),
+                percentTotalOrders);
+        StatisticCompare<Double> totalRevenue = new StatisticCompare<>(currentStatistic.getTotalRevenue(),
+                percentTotalRevenue);
+        StatisticCompare<Long> totalQuantity = new StatisticCompare<Long>(currentStatistic.getTotalQuantity(),
                 percentTotalQuantity);
-        StatisticCompare totalNewCustomers = new StatisticCompare(currentTotalUser,
+        StatisticCompare<Long> totalNewCustomers = new StatisticCompare<>(currentTotalUser,
                 percentNewCustomers);
         return new StatisticsDTO(totalOrders, totalRevenue, totalQuantity,
                 totalNewCustomers,
@@ -98,7 +93,7 @@ public class StatisticService {
     }
 
     // Helper method to avoid division by zero
-    private float calculatePercentageChange(float previous, float current) {
+    private double calculatePercentageChange(double previous, double current) {
         if (previous == 0) {
             return current == 0 ? 0 : 100; // If previous is 0 and current is not, return 100%
         }

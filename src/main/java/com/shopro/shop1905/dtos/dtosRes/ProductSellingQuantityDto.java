@@ -1,6 +1,5 @@
 package com.shopro.shop1905.dtos.dtosRes;
 
-import com.shopro.shop1905.entities.ProductSize;
 import com.shopro.shop1905.entities.ProductSizeColor;
 
 import lombok.AllArgsConstructor;

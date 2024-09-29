@@ -1,32 +1,20 @@
 package com.shopro.shop1905.services;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shopro.shop1905.dtos.dtosReq.ProductSizeAddDTO;
-import com.shopro.shop1905.dtos.dtosReq.ProductSizeIncreDTO;
 import com.shopro.shop1905.dtos.dtosRes.ProductSellingQuantityDto;
 import com.shopro.shop1905.dtos.dtosRes.ProductSizeColorBestSelling;
-import com.shopro.shop1905.entities.Product;
-import com.shopro.shop1905.entities.ProductSize;
 import com.shopro.shop1905.entities.ProductSizeColor;
-import com.shopro.shop1905.entities.Size;
-import com.shopro.shop1905.exceptions.CustomException;
-import com.shopro.shop1905.exceptions.ErrorCode;
 import com.shopro.shop1905.mappers.ProductSizeColorMapper;
 import com.shopro.shop1905.repositories.OrderProductsRepository;
-import com.shopro.shop1905.repositories.ProductRepository;
-import com.shopro.shop1905.repositories.ProductSizeRepository;
-import com.shopro.shop1905.repositories.SizeRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,9 +24,6 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 public class ProductSizeColorService {
-    private final ProductSizeRepository productSizeRepository;
-    private final SizeRepository sizeRepository;
-    private final ProductRepository productRepository;
     private final RedisService redisService;
     private final OrderProductsRepository orderProductsRepository;
 

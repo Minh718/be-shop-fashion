@@ -8,9 +8,8 @@ import org.mapstruct.factory.Mappers;
 
 import com.shopro.shop1905.dtos.dtosReq.OrderDTO;
 import com.shopro.shop1905.dtos.dtosRes.DetailOrderDTO;
-import com.shopro.shop1905.dtos.dtosRes.OrderProductDTO;
-import com.shopro.shop1905.dtos.dtosRes.OrderResDTO;
 import com.shopro.shop1905.dtos.dtosRes.OrderProductResDTO;
+import com.shopro.shop1905.dtos.dtosRes.OrderResDTO;
 import com.shopro.shop1905.entities.OrderProduct;
 import com.shopro.shop1905.entities.TblOrder;
 
@@ -22,6 +21,17 @@ public interface OrderMapper {
 
     @Mapping(target = "totalAmount", source = "order.checkoutRes.paymentFee")
     @Mapping(target = "discount", source = "order.checkoutRes.discount")
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "orderProducts", ignore = true)
+    @Mapping(target = "orderStatus", ignore = true)
+    @Mapping(target = "payment", ignore = true)
+    @Mapping(target = "shippingCost", ignore = true)
+    @Mapping(target = "shippingFee", ignore = true)
+    @Mapping(target = "shippingStatus", ignore = true)
+    @Mapping(target = "trackingNumber", ignore = true)
+    @Mapping(target = "urlPayment", ignore = true)
+    @Mapping(target = "user", ignore = true)
     TblOrder toOrder(OrderDTO order);
 
     DetailOrderDTO toDetailOrderDTO(TblOrder order);

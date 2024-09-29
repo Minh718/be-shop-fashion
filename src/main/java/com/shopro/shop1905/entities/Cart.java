@@ -23,8 +23,6 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    private int quantity = 0;
-
     // @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     // @JoinColumn(name = "user_id", referencedColumnName = "id")
     // User user;

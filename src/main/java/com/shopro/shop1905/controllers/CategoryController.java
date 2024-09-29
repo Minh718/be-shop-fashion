@@ -15,11 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shopro.shop1905.dtos.dtosReq.AddSizeToCategoryReq;
 import com.shopro.shop1905.dtos.dtosReq.CategoryReqDTO;
-import com.shopro.shop1905.dtos.dtosReq.CategorySizesDTO;
 import com.shopro.shop1905.dtos.dtosReq.UpdateSizeDTO;
 import com.shopro.shop1905.dtos.dtosRes.ApiRes;
 import com.shopro.shop1905.dtos.dtosRes.CategoryDTO;
-import com.shopro.shop1905.entities.Category;
 import com.shopro.shop1905.services.CategoryService;
 
 import jakarta.validation.Valid;

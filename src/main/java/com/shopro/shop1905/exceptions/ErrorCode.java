@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public enum ErrorCode {
@@ -23,7 +22,7 @@ public enum ErrorCode {
     UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
     INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
-    INVALID_TOKEN(1009, "Error Token", HttpStatus.BAD_REQUEST),
+    INVALID_TOKEN(1009, "Error Token", HttpStatus.UNAUTHORIZED),
     INVALID_REFRESHTOKEN(1009, "Error Token, Please relogin", HttpStatus.BAD_REQUEST),
     ERROR_SUBCATEGORY(1011, "add Subcategory is fail", HttpStatus.BAD_REQUEST),
     PRODUCT_NOT_EXISTED(1013, "Product not existed", HttpStatus.NOT_FOUND),
@@ -51,6 +50,7 @@ public enum ErrorCode {
     PRODUCT_SIZE_COLOR_EXISTED(1039, "Product size color existed", HttpStatus.BAD_REQUEST),
     CHAT_BOX_NOT_FOUND(1040, "Chat box not found", HttpStatus.NOT_FOUND),
     BRAND_NOT_EXISTED(1041, "Brand not existed", HttpStatus.NOT_FOUND),
+    INVALID_REQUEST(1042, "Invalid request", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

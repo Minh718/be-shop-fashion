@@ -3,11 +3,8 @@ package com.shopro.shop1905.services;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,7 +42,6 @@ import com.shopro.shop1905.repositories.ProductElasticsearchRepository;
 import com.shopro.shop1905.repositories.ProductRepository;
 import com.shopro.shop1905.repositories.ProductSizeColorRepository;
 import com.shopro.shop1905.repositories.ProductSizeRepository;
-import com.shopro.shop1905.repositories.SizeRepository;
 import com.shopro.shop1905.repositories.SubCategoryRepository;
 
 import jakarta.transaction.Transactional;
@@ -58,7 +54,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProductService {
     private final ProductRepository productRepository;
-    private final SizeRepository sizeRepository;
     private final ProductSizeRepository productSizeRepository;
     private final ProductElasticsearchRepository productElasticsearchRepository;
     private final SubCategoryRepository subCategoryRepository;

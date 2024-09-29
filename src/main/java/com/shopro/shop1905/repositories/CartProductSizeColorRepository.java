@@ -3,14 +3,13 @@ package com.shopro.shop1905.repositories;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.data.domain.Page;
-import com.shopro.shop1905.entities.CartProductSizeColor;
 
-import io.lettuce.core.dynamic.annotation.Param;
+import com.shopro.shop1905.entities.CartProductSizeColor;
 
 @Repository
 public interface CartProductSizeColorRepository extends JpaRepository<CartProductSizeColor, Long> {

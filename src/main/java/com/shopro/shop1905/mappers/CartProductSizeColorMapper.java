@@ -5,12 +5,9 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.shopro.shop1905.dtos.dtosRes.CartProductSizeColorDTO;
 import com.shopro.shop1905.entities.CartProductSizeColor;
-import com.shopro.shop1905.entities.ProductSizeColor;
-import com.shopro.shop1905.services.RedisService;
 
 @Mapper
 public interface CartProductSizeColorMapper {
@@ -19,8 +16,12 @@ public interface CartProductSizeColorMapper {
 
     // @Mapping(target = "productSizeColor.quantity", expression =
     // "java(findQuantityOfProductSize(productSizeColor))")
+    @Mapping(target = "productSizeColor", ignore = true)
     CartProductSizeColorDTO toCartProductSizeColorDTO(CartProductSizeColor cartProductSizeColor);
 
+    @Mapping(target = "cart", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "productSizeColorId", ignore = true)
     CartProductSizeColor toCartProductSizeColor(CartProductSizeColorDTO cartProductSizeColorDTO);
 
     List<CartProductSizeColorDTO> toCartProductSizeColorDTOs(

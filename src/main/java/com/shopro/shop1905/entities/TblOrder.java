@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import com.shopro.shop1905.enums.OrderStatus;
-import com.shopro.shop1905.enums.PaymentMethod;
-import com.shopro.shop1905.enums.PaymentStatus;
 import com.shopro.shop1905.enums.ShippingStatus;
 
 import jakarta.persistence.CascadeType;
@@ -17,15 +15,12 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -41,8 +36,8 @@ public class TblOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private long totalAmount;
-    private Long discount;
+    private double totalAmount;
+    private double discount;
     private Long shippingCost = 0L;
     private String shippingAddress;
     private String phone;

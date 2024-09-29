@@ -2,7 +2,6 @@ package com.shopro.shop1905.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +22,6 @@ import com.shopro.shop1905.repositories.ChatBoxRepository;
 import com.shopro.shop1905.repositories.MessageRepository;
 
 import jakarta.transaction.Transactional;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Service

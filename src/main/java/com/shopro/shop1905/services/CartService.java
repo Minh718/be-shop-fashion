@@ -3,7 +3,6 @@ package com.shopro.shop1905.services;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,7 +16,6 @@ import com.shopro.shop1905.dtos.dtosRes.CartProductSizeColorDTO;
 import com.shopro.shop1905.dtos.dtosRes.ProductSizeColorDTO;
 import com.shopro.shop1905.entities.Cart;
 import com.shopro.shop1905.entities.CartProductSizeColor;
-import com.shopro.shop1905.entities.ProductSize;
 import com.shopro.shop1905.entities.ProductSizeColor;
 import com.shopro.shop1905.entities.User;
 import com.shopro.shop1905.exceptions.CustomException;
@@ -25,8 +23,6 @@ import com.shopro.shop1905.exceptions.ErrorCode;
 import com.shopro.shop1905.mappers.CartProductSizeColorMapper;
 import com.shopro.shop1905.mappers.ProductSizeColorMapper;
 import com.shopro.shop1905.repositories.CartProductSizeColorRepository;
-import com.shopro.shop1905.repositories.CartRepository;
-import com.shopro.shop1905.repositories.ProductRepository;
 import com.shopro.shop1905.repositories.ProductSizeColorRepository;
 import com.shopro.shop1905.repositories.UserRepository;
 
@@ -35,11 +31,9 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CartService {
-        private final CartRepository cartRepository;
         private final UserRepository userRepository;
         private final RedisService redisService;
         private final ProductSizeColorRepository productSizeColorRepository;
-        private final ProductRepository productRepository;
         private final CartProductSizeColorRepository cartProductSizeColorRepository;
 
         public Void addProductToCart(CartAddProductDTO cartAddProductDTO) {
@@ -68,8 +62,6 @@ public class CartService {
                                 .findByCartIdAndProductSizeColorId(cart.getId(),
                                                 cartAddProductDTO.getProductSizeColorId())
                                 .orElseGet(() -> {
-                                        cart.setQuantity(cart.getQuantity() + 1);
-                                        cartRepository.save(cart);
                                         return CartProductSizeColor.builder().cart(cart)
                                                         .productSizeColorId(productSizeColor.getId())
                                                         .build();
@@ -89,9 +81,7 @@ public class CartService {
                                 .findByIdAndCartId(cartProductSizeColorId, cart.getId())
                                 .orElseThrow(() -> new CustomException(ErrorCode.CART_PRODUCT_SIZE_NOT_EXISTED));
                 cartProductSizeColorRepository.delete(cartProductSizeColor);
-                cart.setQuantity(cart.getQuantity() - 1);
-                cartRepository.save(cart);
-
+                cartProductSizeColorRepository.deleteById(cartProductSizeColorId);
                 return null;
         }
 

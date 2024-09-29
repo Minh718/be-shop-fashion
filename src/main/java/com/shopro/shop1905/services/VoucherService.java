@@ -35,7 +35,6 @@ public class VoucherService {
 
     private final VoucherRepository voucherRepository;
     private final UserVoucherRepository userVoucherRepository;
-    private final UserVoucherService userVoucherService;
     private final UserRepository userRepository;
     private final RedisService redisService;
     @Autowired
