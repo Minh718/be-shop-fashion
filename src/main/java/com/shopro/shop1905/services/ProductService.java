@@ -176,6 +176,7 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_EXISTED));
         productRepository.delete(product);
+        productElasticsearchRepository.deleteById(product.getId());
     }
 
     public Page<ProductDTO> getProducts(int page, int size) {
@@ -319,7 +320,7 @@ public class ProductService {
         } else {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
         }
-        Page<Product> products = productRepository.findAllByStatus(true,
+        Page<ProductDocument> products = productElasticsearchRepository.findByStatus(true,
                 pageable);
         Page<ProductDTO> productDTOs = products.map(ProductMapper.INSTANCE::toProductDTO);
         return productDTOs;
@@ -363,28 +364,21 @@ public class ProductService {
     public Page<ProductDTO> getPublicProductsBySubCategory(int page, int size, String thump, String sortBy,
             String orderBy) {
         Pageable pageable;
-        if (sortBy.equals("newest")) {
-            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
-
-        } else if (orderBy.equals("asc")) {
+        if (orderBy.equals("asc")) {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, sortBy));
         } else {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
         }
-        SubCategory subCategory = subCategoryRepository.findByThump(thump)
-                .orElseThrow(() -> new CustomException(ErrorCode.SUBCATEGORY_NOT_EXISTED));
-        System.out.println(subCategory.getName());
-        Page<Product> products = productRepository.findAllByStatusAndSubCategory(true, subCategory,
-                pageable);
-        System.out.println(products.getContent().size());
+        Page<ProductDocument> products = productElasticsearchRepository.findByStatusAndThump(true,
+                thump, pageable);
         Page<ProductDTO> productDTOs = products.map(ProductMapper.INSTANCE::toProductDTO);
         return productDTOs;
     }
 
     public List<ProductDTO> getPublicNewestProductsByCategory(int size,
             Long idCategory) {
-        Pageable pageable = PageRequest.of(0, size);
-        Page<Product> products = productRepository.findAllByStatusAndCategoryIdOrderByCreatedDateDesc(true,
+        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<ProductDocument> products = productElasticsearchRepository.findByStatusAndCategoryId(true,
                 idCategory, pageable);
         Page<ProductDTO> productDTOs = products.map(ProductMapper.INSTANCE::toProductDTO);
         return productDTOs.getContent();

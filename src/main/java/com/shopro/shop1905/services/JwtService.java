@@ -11,9 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.shopro.shop1905.entities.User;
+import com.shopro.shop1905.exceptions.CustomException;
+import com.shopro.shop1905.exceptions.ErrorCode;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -21,18 +26,17 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-    // public String extractId(String token) {
-    // try {
+    public String extractId(String token) {
+        try {
 
-    // int i = token.lastIndexOf('.');
-    // String withoutSignature = token.substring(0, i + 1);
-    // Jwt<Header, Claims> untrusted =
-    // Jwts.parserBuilder().build().parseClaimsJwt(withoutSignature);
-    // return untrusted.getBody().getSubject();
-    // } catch (MalformedJwtException e) {
-    // throw new CustomException(ErrorCode.INVALID_TOKEN);
-    // }
-    // }
+            int i = token.lastIndexOf('.');
+            String withoutSignature = token.substring(0, i + 1);
+            Jwt<Header, Claims> untrusted = Jwts.parserBuilder().build().parseClaimsJwt(withoutSignature);
+            return untrusted.getBody().getSubject();
+        } catch (MalformedJwtException e) {
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+        }
+    }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver, String key) {
         final Claims claims = extractAllClaims(token, key);

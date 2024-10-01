@@ -47,7 +47,7 @@ public class UserService {
         if (id == null) {
             User user = userRepository.findByRolesName(RoleUser.ADMIN_ROLE)
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_EXISTED));
-            redisService.setKeyInDate(refreshKey, user.getId(), 1);
+            redisService.setKey("idAdmin", user.getId());
             return user.getId();
         }
         return id.toString();

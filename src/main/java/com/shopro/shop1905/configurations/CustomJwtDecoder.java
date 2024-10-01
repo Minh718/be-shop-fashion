@@ -15,6 +15,7 @@ import com.shopro.shop1905.entities.User;
 import com.shopro.shop1905.exceptions.CustomException;
 import com.shopro.shop1905.exceptions.ErrorCode;
 import com.shopro.shop1905.repositories.UserRepository;
+import com.shopro.shop1905.services.JwtService;
 import com.shopro.shop1905.services.RedisService;
 
 import io.jsonwebtoken.io.Decoders;
@@ -25,11 +26,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomJwtDecoder implements JwtDecoder {
     private final RedisService redisService;
+    private final JwtService jwtService;
     private final UserRepository userRepository;
 
     @Override
     public Jwt decode(String token) throws JwtException {
-        // String idUser = jwtService.extractId(token);
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes == null) {
             throw new CustomException(ErrorCode.INVALID_REQUEST);
@@ -37,12 +38,14 @@ public class CustomJwtDecoder implements JwtDecoder {
         HttpServletRequest request = attributes.getRequest();
 
         // Extract 'idUser' from the header
-        String idUser = request.getHeader("x-user-id");
+        String idUser = request.getHeader("x-user-id"); // connect for website
 
         if (idUser == null || idUser.isEmpty()) {
-            idUser = (String) request.getAttribute("x-user-id");
+            idUser = (String) request.getAttribute("x-user-id"); // handle for connect chat socket
             if (idUser == null)
-                throw new CustomException(ErrorCode.INVALID_TOKEN); // Handle missing or empty 'idUser' header
+                idUser = jwtService.extractId(token); // connect swagger
+            // throw new CustomException(ErrorCode.INVALID_TOKEN); // Handle missing or
+            // empty 'idUser' header
         }
         String keyToken = null;
         if (redisService.checkKeyExist("keyToken:" + idUser)) {
