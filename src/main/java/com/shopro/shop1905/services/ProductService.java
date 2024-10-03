@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.hibernate.search.engine.search.sort.dsl.SortOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,6 @@ import com.shopro.shop1905.entities.Category;
 import com.shopro.shop1905.entities.Color;
 import com.shopro.shop1905.entities.DetailProduct;
 import com.shopro.shop1905.entities.Product;
-import com.shopro.shop1905.entities.ProductDocument;
 import com.shopro.shop1905.entities.ProductSize;
 import com.shopro.shop1905.entities.ProductSizeColor;
 import com.shopro.shop1905.entities.Size;
@@ -38,13 +38,13 @@ import com.shopro.shop1905.mappers.ProductMapper;
 import com.shopro.shop1905.repositories.BrandRepository;
 import com.shopro.shop1905.repositories.CategoryRepository;
 import com.shopro.shop1905.repositories.ColorRepository;
-import com.shopro.shop1905.repositories.ProductElasticsearchRepository;
 import com.shopro.shop1905.repositories.ProductRepository;
 import com.shopro.shop1905.repositories.ProductSizeColorRepository;
 import com.shopro.shop1905.repositories.ProductSizeRepository;
 import com.shopro.shop1905.repositories.SubCategoryRepository;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +55,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductSizeRepository productSizeRepository;
-    private final ProductElasticsearchRepository productElasticsearchRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final CategoryRepository categoryRepository;
     private final RedisService redisService;
@@ -66,31 +65,15 @@ public class ProductService {
     @NonFinal
     private final String uploadDir = "uploads/";
 
-    public Page<ProductDTO> searchByName(String name, int size, int page, String sortBy,
+    public Page<ProductDTO> searchPublicProductsByName(@NotBlank(message = "query is required") String name, int size,
+            int page, String sortBy,
             String orderBy) {
-        Pageable pageable;
-        if (orderBy.equals("asc")) {
-            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, sortBy));
-        } else {
-            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
-        }
-
-        Page<ProductDocument> products = productElasticsearchRepository.findByNameAndStatus(name, true,
-                pageable);
+        Pageable pageable = PageRequest.of(page, size);
+        SortOrder sortOrder = orderBy.equals("asc") ? SortOrder.ASC : SortOrder.DESC;
+        Page<Product> products = productRepository.searchPublicProduct(name, pageable, List.of("name"), "createdDate",
+                sortOrder);
         Page<ProductDTO> productDTOs = products.map(ProductMapper.INSTANCE::toProductDTO);
         return productDTOs;
-    }
-
-    public void syncProductsFromMySQLToElasticsearch() {
-        // Fetch all products from MySQL
-        List<Product> productEntities = productRepository.findAll();
-
-        // Convert ProductEntity to ProductDocument
-        for (Product productEntity : productEntities) {
-            ProductDocument productDocument = ProductMapper.INSTANCE.toProductDocument(productEntity);
-            // Save to Elasticsearch
-            productElasticsearchRepository.save(productDocument);
-        }
     }
 
     public ProductDTO addProduct(ProductAddDTO productAddDTO) {
@@ -138,7 +121,6 @@ public class ProductService {
                 .build();
         // Save product again to update the list of product sizes
         productRepository.save(product);
-        productElasticsearchRepository.save(ProductMapper.INSTANCE.toProductDocument(product));
         return ProductMapper.INSTANCE.toProductDTO(product);
     }
 
@@ -176,7 +158,6 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_EXISTED));
         productRepository.delete(product);
-        productElasticsearchRepository.deleteById(product.getId());
     }
 
     public Page<ProductDTO> getProducts(int page, int size) {
@@ -320,7 +301,7 @@ public class ProductService {
         } else {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
         }
-        Page<ProductDocument> products = productElasticsearchRepository.findByStatus(true,
+        Page<Product> products = productRepository.findAllByStatus(true,
                 pageable);
         Page<ProductDTO> productDTOs = products.map(ProductMapper.INSTANCE::toProductDTO);
         return productDTOs;
@@ -369,16 +350,18 @@ public class ProductService {
         } else {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
         }
-        Page<ProductDocument> products = productElasticsearchRepository.findByStatusAndThump(true,
-                thump, pageable);
+        SubCategory subCategory = subCategoryRepository.findByThump(thump)
+                .orElseThrow(() -> new CustomException(ErrorCode.SUBCATEGORY_NOT_EXISTED));
+        Page<Product> products = productRepository.findAllByStatusAndSubCategory(true,
+                subCategory, pageable);
         Page<ProductDTO> productDTOs = products.map(ProductMapper.INSTANCE::toProductDTO);
         return productDTOs;
     }
 
     public List<ProductDTO> getPublicNewestProductsByCategory(int size,
             Long idCategory) {
-        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "createdDate"));
-        Page<ProductDocument> products = productElasticsearchRepository.findByStatusAndCategoryId(true,
+        Pageable pageable = PageRequest.of(0, size);
+        Page<Product> products = productRepository.findAllByStatusAndCategoryIdOrderByCreatedDateDesc(true,
                 idCategory, pageable);
         Page<ProductDTO> productDTOs = products.map(ProductMapper.INSTANCE::toProductDTO);
         return productDTOs.getContent();

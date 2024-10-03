@@ -68,7 +68,8 @@ public class ProductController {
                         @RequestParam(defaultValue = "createdDate") String sortBy,
                         @RequestParam(defaultValue = "desc") String order,
                         @RequestParam String query) {
-                Page<ProductDTO> productPage = productService.searchByName(query, size, page, sortBy, order);
+                Page<ProductDTO> productPage = productService.searchPublicProductsByName(query, size, page, sortBy,
+                                order);
                 MetadataDTO metadata = new MetadataDTO(
                                 productPage.getTotalElements(),
                                 productPage.getTotalPages(),
@@ -76,12 +77,6 @@ public class ProductController {
                                 productPage.getSize());
                 return ApiMetaRes.<List<ProductDTO>>builder().code(1000).message("lấy danh sách thành công")
                                 .result(productPage.getContent()).metadata(metadata).build();
-        }
-
-        @GetMapping("/aync")
-        public String syncProducts() {
-                productService.syncProductsFromMySQLToElasticsearch();
-                return "Synchronization complete!";
         }
 
         @Caching(evict = {

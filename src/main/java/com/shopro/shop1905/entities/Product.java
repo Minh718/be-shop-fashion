@@ -4,6 +4,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.search.engine.backend.types.Sortable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,13 +34,17 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Indexed
 @Entity
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @FullTextField
     private String name;
+    // @FullTextField
+    // @KeywordField(name = "price", sortable = Sortable.YES)
     private int price;
     private int percent;
     private String image;
@@ -42,8 +52,10 @@ public class Product {
 
     // @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Builder.Default
+    // @KeywordField(name = "createdDate", sortable = Sortable.YES)
     private LocalDateTime createdDate = LocalDateTime.now();
     @Builder.Default
+    @GenericField
     private boolean status = true;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subCate_id", referencedColumnName = "id")

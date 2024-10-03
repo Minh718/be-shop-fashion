@@ -25,7 +25,7 @@ public class SecurityConfig {
                         "/api/auth/login/*", "/api/product/search",
                         "/api/product/public/*",
                         "swagger-ui/**", "v3/api-docs/**", "swagger-ui.html", "swagger-ui/**",
-                        "/api/payment/vn-pay-callback"
+                        "/api/payment/vn-pay-callback", "/index-lucene-product"
 
         };
         // @Autowired

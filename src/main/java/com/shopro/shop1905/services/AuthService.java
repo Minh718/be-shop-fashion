@@ -78,6 +78,10 @@ public class AuthService {
     String CLIENT_ID;
 
     @NonFinal
+    @Value("${frontend.host}")
+    String FRONT_END;
+
+    @NonFinal
     @Value("${auth.google.client-secret}")
     String CLIENT_SECRET;
 
@@ -175,7 +179,7 @@ public class AuthService {
                 .code(code)
                 .clientId(CLIENT_ID)
                 .clientSecret(CLIENT_SECRET)
-                .redirectUri(REDIRECT_URI)
+                .redirectUri(FRONT_END + REDIRECT_URI)
                 .grantType(GRANT_TYPE)
                 .build();
         GetTokenGoogleRes getTokenGoogleRes = outboundIdentityClientGoogle.getToken(

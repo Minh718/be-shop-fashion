@@ -1,14 +1,24 @@
-# Stage 1: Build the Java app
-# FROM maven:3.8.3-openjdk-17 as build
-# WORKDIR /app
-# COPY . .
-# RUN mvn package
+# Step 1: Build stage
+FROM maven:3.8.5-openjdk-17 AS build
+WORKDIR /app
 
-# Stage 2: Run the app
-# FROM openjdk:11-jre-slim
-# COPY --from=build /app/target/my-app.jar /my-app.jar
-# CMD ["java", "-jar", "/my-app.jar"]
+# Copy the pom.xml and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-FROM openjdk:11-jre-slim
-COPY shop1905-0.0.1-SNAPSHOT.jar /my-app.jar
-CMD ["java", "-jar", "/my-app.jar"]
+# Copy the source code and build the application
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Step 2: Run stage
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+
+# Copy the built JAR file from the build stage
+COPY --from=build /app/target/*.jar /app/your-app.jar
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Run the Spring Boot application
+ENTRYPOINT ["java", "-jar", "/app/your-app.jar"]

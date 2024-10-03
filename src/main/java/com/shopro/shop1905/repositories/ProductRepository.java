@@ -13,7 +13,7 @@ import com.shopro.shop1905.entities.Product;
 import com.shopro.shop1905.entities.SubCategory;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, ProductSearchRepository {
         @Query("SELECT  p FROM Product p LEFT JOIN FETCH p.detailProduct  LEFT JOIN FETCH p.productSizes ps LEFT JOIN FETCH ps.productSizeColors  WHERE p.id = :id")
         Optional<Product> findByIdAndFetchProductSizesAndFetchDetailProduct(Long id);
 
