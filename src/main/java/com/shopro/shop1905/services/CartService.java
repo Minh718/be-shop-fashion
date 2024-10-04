@@ -25,6 +25,7 @@ import com.shopro.shop1905.mappers.ProductSizeColorMapper;
 import com.shopro.shop1905.repositories.CartProductSizeColorRepository;
 import com.shopro.shop1905.repositories.ProductSizeColorRepository;
 import com.shopro.shop1905.repositories.UserRepository;
+import com.shopro.shop1905.util.DateTimeUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -67,7 +68,7 @@ public class CartService {
                                                         .build();
                                 });
                 cartProductSizeColor.setQuantity(requestedQuantity);
-                cartProductSizeColor.setUpdateAt(LocalDateTime.now());
+                cartProductSizeColor.setUpdateAt(DateTimeUtil.getCurrentVietnamTime());
                 cartProductSizeColorRepository.save(cartProductSizeColor);
                 return null;
         }

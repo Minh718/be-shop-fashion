@@ -41,9 +41,7 @@ public class CustomJwtDecoder implements JwtDecoder {
         String idUser = request.getHeader("x-user-id"); // connect for website
 
         if (idUser == null || idUser.isEmpty()) {
-            idUser = (String) request.getAttribute("x-user-id"); // handle for connect chat socket
-            if (idUser == null)
-                idUser = jwtService.extractId(token); // connect swagger
+            idUser = jwtService.extractId(token); // connect swagger
             // throw new CustomException(ErrorCode.INVALID_TOKEN); // Handle missing or
             // empty 'idUser' header
         }

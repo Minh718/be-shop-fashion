@@ -15,6 +15,6 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     @Query("SELECT m FROM Message m WHERE m.idChatBox = :chatBoxId ORDER BY m.createdAt DESC")
     List<Message> findTopMessages(Long chatBoxId, Pageable pageable);
 
-    @Query(nativeQuery = true, value = "select cb.id as id, u.name as name, u.picture as image, cb.user_id as userId, cb.admin_readed as isSeen from chat_box cb join tbl_user u on cb.user_id = u.id where cb.admin_readed = TRUE order by cb.updated_at desc;")
+    @Query(nativeQuery = true, value = "select cb.id as id, u.name as name, u.picture as image, cb.user_id as userId, cb.admin_readed as isSeen from chat_box cb join tbl_user u on cb.user_id = u.id where cb.admin_readed = FALSE order by cb.updated_at desc;")
     List<ListChatBox> findChatBoxListUnSeenByAdmin();
 }

@@ -44,6 +44,7 @@ import com.shopro.shop1905.repositories.CartProductSizeColorRepository;
 import com.shopro.shop1905.repositories.OrderRepository;
 import com.shopro.shop1905.repositories.ProductSizeColorRepository;
 import com.shopro.shop1905.repositories.UserRepository;
+import com.shopro.shop1905.util.DateTimeUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -268,7 +269,7 @@ public class OrderService {
     }
 
     private boolean hasPaymentTimeElapsed(TblOrder order) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = DateTimeUtil.getCurrentVietnamTime();
         Duration duration = Duration.between(order.getCreatedAt(), now);
 
         return duration.toMinutes() > 15;

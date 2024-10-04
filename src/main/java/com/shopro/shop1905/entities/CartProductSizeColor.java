@@ -2,6 +2,8 @@ package com.shopro.shop1905.entities;
 
 import java.time.LocalDateTime;
 
+import com.shopro.shop1905.util.DateTimeUtil;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -29,9 +31,9 @@ public class CartProductSizeColor {
     private Long id;
     private Integer quantity;
     @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt = DateTimeUtil.getCurrentVietnamTime();
     @Builder.Default
-    private LocalDateTime updateAt = LocalDateTime.now();
+    private LocalDateTime updateAt = DateTimeUtil.getCurrentVietnamTime();
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private Cart cart;

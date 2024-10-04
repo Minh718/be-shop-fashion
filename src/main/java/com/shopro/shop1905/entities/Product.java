@@ -10,6 +10,8 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericFie
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
+import com.shopro.shop1905.util.DateTimeUtil;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -53,7 +55,7 @@ public class Product {
     // @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Builder.Default
     // @KeywordField(name = "createdDate", sortable = Sortable.YES)
-    private LocalDateTime createdDate = LocalDateTime.now();
+    private LocalDateTime createdDate = DateTimeUtil.getCurrentVietnamTime();
     @Builder.Default
     @GenericField
     private boolean status = true;

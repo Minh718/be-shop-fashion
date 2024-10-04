@@ -73,31 +73,11 @@ public class SecurityConfig {
                 // Check if the request path starts with /ws
                 String path = request.getServletPath();
                 if (path.startsWith("/ws")) {
-                        // Extract token from cookies
-                        Cookie[] cookies = request.getCookies();
-                        if (cookies != null) {
-                                String token = null;
-                                String userId = null;
-                                for (Cookie cookie : cookies) {
-                                        // Check for accessToken cookie
-                                        if ("accessToken".equals(cookie.getName())) {
-                                                token = cookie.getValue();
-                                        }
-                                        // Check for x-user-id cookie
-                                        else if ("x-user-id".equals(cookie.getName())) {
-                                                userId = cookie.getValue();
-                                        }
-                                }
-                                // If both accessToken and x-user-id are present, set the userId as a request
-                                // attribute
-                                if (token != null && userId != null) {
-                                        request.setAttribute("x-user-id", userId);
-                                        return token;
-                                }
+                        String token = request.getParameter("access_token");
+                        if (token != null) {
+                                return token;
                         }
                 }
-
-                // Return null if no token is found
                 return null;
         }
 

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.shopro.shop1905.enums.OrderStatus;
 import com.shopro.shop1905.enums.ShippingStatus;
+import com.shopro.shop1905.util.DateTimeUtil;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -53,7 +54,7 @@ public class TblOrder {
 
     private String trackingNumber;
     private Long shippingFee = 0L;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt = DateTimeUtil.getCurrentVietnamTime();
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<OrderProduct> orderProducts;

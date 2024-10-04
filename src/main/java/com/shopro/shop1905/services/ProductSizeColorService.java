@@ -15,6 +15,7 @@ import com.shopro.shop1905.dtos.dtosRes.ProductSizeColorBestSelling;
 import com.shopro.shop1905.entities.ProductSizeColor;
 import com.shopro.shop1905.mappers.ProductSizeColorMapper;
 import com.shopro.shop1905.repositories.OrderProductsRepository;
+import com.shopro.shop1905.util.DateTimeUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,8 +29,8 @@ public class ProductSizeColorService {
     private final OrderProductsRepository orderProductsRepository;
 
     public Page<ProductSizeColorBestSelling> getBestSellingProductSize(int page, int size) {
-        LocalDateTime start = LocalDateTime.now().minusDays(1);
-        LocalDateTime end = LocalDateTime.now();
+        LocalDateTime start = DateTimeUtil.getCurrentVietnamTime().minusDays(1);
+        LocalDateTime end = DateTimeUtil.getCurrentVietnamTime();
         Pageable pageable = PageRequest.of(page, size);
 
         Page<ProductSellingQuantityDto> productSellingQuantityDtos = orderProductsRepository

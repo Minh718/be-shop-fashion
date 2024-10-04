@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.shopro.shop1905.enums.PaymentMethod;
 import com.shopro.shop1905.enums.PaymentStatus;
+import com.shopro.shop1905.util.DateTimeUtil;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -33,7 +34,7 @@ public class Payment {
     private String transactionID;
     private String userId;
     private boolean tranNew = false;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt = DateTimeUtil.getCurrentVietnamTime();
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus = PaymentStatus.UNPAID;
 

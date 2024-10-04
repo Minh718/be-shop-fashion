@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import com.shopro.shop1905.enums.TypeLogin;
+import com.shopro.shop1905.util.DateTimeUtil;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -55,7 +56,7 @@ public class User {
     private String idUserGithub = "0";
     private LocalDate dob;
     @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt = DateTimeUtil.getCurrentVietnamTime();
     @Enumerated(EnumType.STRING)
     private TypeLogin typeLogin;
     @Builder.Default
