@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 import com.shopro.shop1905.entities.Cart;
 
 @Repository
-public interface CartRepository extends JpaRepository<Cart, UUID> {
+public interface CartRepository extends JpaRepository<Cart, String> {
 }

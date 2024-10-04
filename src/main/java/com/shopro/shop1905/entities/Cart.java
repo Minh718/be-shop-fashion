@@ -21,8 +21,8 @@ import lombok.Data;
 @Data
 public class Cart {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     // @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     // @JoinColumn(name = "user_id", referencedColumnName = "id")
     // User user;

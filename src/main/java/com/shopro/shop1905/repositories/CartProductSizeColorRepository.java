@@ -15,13 +15,13 @@ import com.shopro.shop1905.entities.CartProductSizeColor;
 public interface CartProductSizeColorRepository extends JpaRepository<CartProductSizeColor, Long> {
         @Query("SELECT cpsc FROM CartProductSizeColor cpsc WHERE cpsc.cart.id=:cartId And cpsc.productSizeColorId=:productSizeColorId")
 
-        Optional<CartProductSizeColor> findByCartIdAndProductSizeColorId(UUID cartId,
+        Optional<CartProductSizeColor> findByCartIdAndProductSizeColorId(String cartId,
                         long productSizeColorId);
 
         // java.util.List<CartProductSizeColor> findAllByCartId(UUID cartId);
 
         @Query("SELECT cpsc FROM CartProductSizeColor cpsc WHERE cpsc.cart.id = :cartId ORDER BY cpsc.updateAt DESC")
-        Page<CartProductSizeColor> findAllByCartIdOrderByUpdateAtDesc(UUID cartId,
+        Page<CartProductSizeColor> findAllByCartIdOrderByUpdateAtDesc(String cartId,
                         Pageable pageable);
         // findAllByCartIdAndFetchProductSizeColorsAndProductSizeAndProductOrderByUpdateAtDesc(
         // UUID cartId, Pageable pageable);
@@ -29,7 +29,7 @@ public interface CartProductSizeColorRepository extends JpaRepository<CartProduc
         // And cpsc.productSize.id = :productSizeId")
         // void deleteByCartIdAndProductSizeId(UUID cartId, long productSizeId);
 
-        Optional<CartProductSizeColor> findByIdAndCartId(long id, UUID cartId);
+        Optional<CartProductSizeColor> findByIdAndCartId(long id, String cartId);
 
         // @Query("SELECT cpsc FROM CartProductSizeColor cpsc JOIN FETCH
         // cpsc.productSizeColor psc JOIN FETCH psc.productSize ps LEFT JOIN FETCH
