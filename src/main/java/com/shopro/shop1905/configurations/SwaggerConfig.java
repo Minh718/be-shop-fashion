@@ -7,11 +7,19 @@ import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
+
+import java.util.Collections;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
+
+        @Value("${backend.host}")
+        String backendHost;
 
         @Bean
         public OpenAPI customOpenAPI() {
@@ -32,6 +40,8 @@ public class SwaggerConfig {
                                                                                 .name("x-user-id")
                                                                                 .required(true)
                                                                                 .description("User ID")
-                                                                                .schema(new StringSchema())));
+                                                                                .schema(new StringSchema())))
+                                .servers(Collections.singletonList(new Server().url(backendHost)));
         }
+
 }
